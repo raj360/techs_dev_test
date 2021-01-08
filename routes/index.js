@@ -13,15 +13,12 @@ router.get('/',(req,res)=>{
  res.json({message:'Dev test api...'});
 })
 
+const filterRecipes = (data) =>data.map(recipe=> recipe.recipe) //generate array of with names
+                              .filter((name, index, array) =>  array.indexOf(name) === index )//if exists return -1, hence don't include
+
 
 router.get('/unique_recipe_count',(req, res)=>{
-
-const recipes = data.map(recipe=> recipe.recipe) //generate array of with names
-                 .filter((name, index, array) => { 
-
-                 return  array.indexOf(name) === index //if exists return -1, hence don't include
-      })
-
+const recipes = filterRecipes(data)
       res.json({unique_recipe_count:recipes.length})
 })
 
@@ -72,13 +69,16 @@ router.get('/busiest_postcode',(req,res)=>{
 })
 
 
-router.get('/match_by_name',(req, res) =>{
-   
+router.get('/match_by_name/:query',(req, res) =>{
+
+  const {query} = req.params;
+     
+   const recipes = filterRecipes(data)//re-use result in one to filter duplicates
+                    .sort() //sort entries
+                    .filter(recipe=> recipe.includes(query)) //filter if contains sub-string
+          
+   res.json({match_by_name:recipes})
 })
-
-
-
-
 
 
 module.exports = router;
