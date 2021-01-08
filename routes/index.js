@@ -64,11 +64,11 @@ router.get('/busiest_postcode',(req,res)=>{
 
      let counts = Object.values(postCounts) ;                                  
   
-     let max =  Math.max(...counts) 
+     let delivery_count =  Math.max(...counts) 
    
-     let postcode  = getKeyByValue(postCounts,max)
+     let postcode  = getKeyByValue(postCounts,delivery_count)
 
-  res.json({postcode,delivery_count:max})
+  res.json({postcode,delivery_count})
 })
 
 
