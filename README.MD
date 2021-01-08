@@ -97,4 +97,4 @@ __General criteria from most important to less important__:
 3. Code is readable and comprehensible. Setup instructions and run instructions are provided.
 4. Tests showcased are a plus (_no need to cover everything_).
 5. Supporting notes on taken decisions and further clarifications are welcome.
-6. Avoid use of web frameworks. 
+6. Avoid use of web frameworks.
