@@ -1,8 +1,11 @@
 const url = require('url');
 const data = require('../data.json')
 const querystring = require('querystring');
+const fs = require('fs'); 
+
 
 //////This is where the logic of the api is located
+const date = new Date();
 
 
 
@@ -28,8 +31,17 @@ const  getKeyByValue = (object, value) =>  {
      const recipes = filterRecipes(data)
 
      let unique_recipe_count = recipes.length;
+    
+     let uniqueRecipeCountJson = JSON.stringify({unique_recipe_count})
+     
+    fs.writeFile(`${date.toLocaleTimeString()}-unique_recipe_count.json`, uniqueRecipeCountJson,(error)=>{
+      if(error){
+        console.log(error)
+      }  
 
-   res.end(JSON.stringify({unique_recipe_count}))
+    }); //saving json with date details appended
+
+   res.end(uniqueRecipeCountJson)
  }
 
  exports.countPerRecipe = (req, res) =>{
@@ -38,7 +50,7 @@ const  getKeyByValue = (object, value) =>  {
   const recipesAndCount = data.map(recipe=> recipe.recipe ) //generate array of with names
                        .reduce((array, currentRecipe) =>{ //iterating over the recipes
               
-          let  recipe =   array.find(elem => elem.recipe === currentRecipe) //check for occurrance in my new array
+      let  recipe =   array.find(elem => elem.recipe === currentRecipe) //check for occurrance in my new array
 
           if(recipe === undefined) {  //If recipe is not in the new array
                  array.push({recipe:currentRecipe,count:1});
@@ -52,9 +64,14 @@ const  getKeyByValue = (object, value) =>  {
 }, []);
 
   let count_per_recipe = recipesAndCount;
+  let countPerRecipeJson =  JSON.stringify({count_per_recipe})
+  fs.writeFile(`${date.toLocaleTimeString()}-count_per_recipe.json`, countPerRecipeJson,(error)=>{
+    if(error){
+      console.log(error)
+    }  
 
-  res.end(JSON.stringify({count_per_recipe}))
-
+  });
+  res.end(countPerRecipeJson)
  }
 
  exports.busiestPostcode = (req,res) => {
@@ -69,8 +86,14 @@ const  getKeyByValue = (object, value) =>  {
      let counts = Object.values(postCounts) ;                                  
      let delivery_count =  Math.max(...counts) 
      let postcode  = getKeyByValue(postCounts,delivery_count)
+     let postCodeJson =JSON.stringify({postcode,delivery_count})
+      fs.writeFile(`${date.toLocaleTimeString()}-postcode.json`, postCodeJson,(error)=>{
+        if(error){
+          console.log(error)
+        }  
 
-      res.end(JSON.stringify({postcode,delivery_count}))
+      });
+      res.end(postCodeJson)
 
  }
 
@@ -81,12 +104,22 @@ exports.matchByName =  (req,res) => {
     const urlData  = querystring.parse(parsed.query);
     const {query} = urlData;
 
+
    const recipes = filterRecipes(data)//re-use result in one to filter duplicates
                     .sort() //sort entries
                     .filter(recipe=> recipe.includes(query)) //filter if contains sub-string
-                    let match_by_name = recipes;
+                  
+    let match_by_name = recipes;
+    
+    let matchByNameJson = JSON.stringify({match_by_name})            
+    fs.writeFile(`${date}-match_by_name.json`, matchByNameJson,(error)=>{
+      if(error){
+        console.log(error)
+      }  
 
-    res.end(JSON.stringify({match_by_name}))
+    });   
+
+    res.end(matchByNameJson)
 
 }
 
